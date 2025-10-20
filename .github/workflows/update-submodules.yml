@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: git-submodules # update submodles like argokit
+    directory: /
+    schedule:
+      interval: daily
