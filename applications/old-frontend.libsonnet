@@ -1,4 +1,4 @@
-function(name='regelrett-frontend', env, version) [
+function(name, env, version) [
   {
     apiVersion: 'skiperator.kartverket.no/v1alpha1',
     kind: 'Application',

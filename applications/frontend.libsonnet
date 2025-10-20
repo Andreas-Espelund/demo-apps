@@ -8,8 +8,6 @@ function(name, env, version)
   + application.withEnvironmentVariables({
     VITE_AUTHORITY: 'https://login.microsoftonline.com/1234-5678/v2.0',
     VITE_FRONTEND_URL: 'https://devex.atgcp1-' + env + '.host.com',
-    VITE_CLIENT_ID:
-      if env == 'dev' then 'abcd-efgh-1234-5678'
-      else if env == 'prod' then 'xyz-123-asdf',
+    VITE_CLIENT_ID: if env == 'dev' then 'abcd-efgh-1234-5678' else if env == 'prod' then 'xyz-123-asdf',
     VITE_BACKEND_URL: '/api',
   })

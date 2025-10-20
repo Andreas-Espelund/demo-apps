@@ -1,11 +1,11 @@
 function(
   env,
-  name='regelrett-backend',
+  name='demo-backend',
   version,
   gsmProjectId,
-  secretStoreName='regelrett-backend-skvis-gsm',
-  esoName='regelrett-backend-secrets',
-  kubernetesSecretEntraIdSecretName='entraid-secret-rr',
+  secretStoreName='devex-demo-gsm',
+  esoName='devex-demo-secrets',
+  kubernetesSecretEntraIdSecretName='DE-entraid-secret',
   cloudSqlConfig,
   dbUser,
   replyUrl,
@@ -27,7 +27,7 @@ function(
         path: '/health',
         port: 8080,
       },
-      ingresses: ['regelrett.atgcp1-' + env + '.kartverket-intern.cloud'],
+      ingresses: ['backend.atgcp1-' + env + '.host.com'],
       resources: {
         requests: {
           cpu: '25m',
@@ -48,7 +48,7 @@ function(
       env: [
         {
           name: 'RR_SERVER_DOMAIN',
-          value: 'regelrett.atgcp1-' + env + '.kartverket-intern.cloud',
+          value: 'demo.atgcp1-' + env + '.host.com',
         },
         {
           name: 'RR_SERVER_PROTOCOL',
@@ -60,19 +60,19 @@ function(
         },
         {
           name: 'RR_SERVER_ROOT_URL',
-          value: 'https://regelrett.atgcp1-' + env + '.kartverket-intern.cloud',
+          value: 'https://demo.atgcp1-' + env + '.host.com',
         },
         {
           name: 'FRONTEND_URL_HOST',
-          value: 'regelrett.atgcp1-' + env + '.kartverket-intern.cloud',
+          value: 'demo.atgcp1-' + env + '.host.com',
         },
         {
           name: 'TENANT_ID',
-          value: '7f74c8a2-43ce-46b2-b0e8-b6306cba73a3',
+          value: 'f9f9f-abcd-1234-gagaga-lgtm-123',
         },
         {
           name: 'AUTH_PROVIDER_URL',
-          value: 'https://regelrett.atgcp1-' + env + '.kartverket-intern.cloud/callback',
+          value: 'https://demo.atgcp1-' + env + '.host.com/callback',
         },
         {
           name: 'DB_NAME',
@@ -84,11 +84,11 @@ function(
         },
         {
           name: 'FRISK_FRONTEND_URL_HOST',
-          value: 'https://frisk.atgcp1-' + env + '.kartverket-intern.cloud',
+          value: 'https://frisk.atgcp1-' + env + '.host.com',
         },
         {
           name: 'RR_OAUTH_TENANT_ID',
-          value: '7f74c8a2-43ce-46b2-b0e8-b6306cba73a3',
+          value: 'f9f9f-abcd-1234-gagaga-lgtm-123',
         },
         {
           name: 'RR_DATABASE_HOST',
@@ -96,7 +96,7 @@ function(
         },
         {
           name: 'RR_DATABASE_NAME',
-          value: 'regelrett',
+          value: 'demo',
         },
         {
           name: 'RR_DATABASE_USER',
@@ -108,7 +108,7 @@ function(
         },
         {
           name: 'RR_SERVER_ALLOWED_ORIGINS',
-          value: 'frisk.atgcp1-' + env + '.kartverket-intern.cloud',
+          value: 'frisk.atgcp1-' + env + '.host.com',
         },
         {
           name: 'RR_OAUTH_CLIENT_ID',
@@ -131,7 +131,7 @@ function(
       ],
       filesFrom: [
         {
-          mountPath: '/etc/regelrett/provisioning/schemasources',
+          mountPath: '/etc/demo/provisioning/schemasources',
           secret: 'provisioning-file',
         },
       ],
@@ -139,7 +139,7 @@ function(
         inbound: {
           rules: [
             {
-              application: 'regelrett-frontend',
+              application: 'demo-frontend',
             },
             {
               application: 'frisk-backend',
@@ -193,38 +193,38 @@ function(
       data: [
         {
           remoteRef: {
-            key: 'regelrett-airtable-token',
+            key: 'demo-airtable-token',
             metadataPolicy: 'None',
           },
           secretKey: 'AIRTABLE_ACCESS_TOKEN',
         },
         {
           remoteRef: {
-            key: 'regelrett-airtable-token',
+            key: 'demo-airtable-token',
             metadataPolicy: 'None',
           },
-          secretKey: 'RR_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN',
+          secretKey: 'DE_SCHEMA_DRIFTSKONTINUITET_AIRTABLE_ACCESS_TOKEN',
         },
         {
           remoteRef: {
-            key: 'regelrett-superuser',
+            key: 'demo-superuser',
             metadataPolicy: 'None',
           },
-          secretKey: 'RR_OAUTH_SUPER_USER_GROUP',
+          secretKey: 'DE_OAUTH_SUPER_USER_GROUP',
         },
         {
           remoteRef: {
-            key: 'regelrett-airtable-token',
+            key: 'demo-airtable-token',
             metadataPolicy: 'None',
           },
-          secretKey: 'RR_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN',
+          secretKey: 'DE_SCHEMA_SIKKERHETSKONTROLLER_AIRTABLE_ACCESS_TOKEN',
         },
         {
           remoteRef: {
-            key: 'regelrett-airtable-token',
+            key: 'demo-airtable-token',
             metadataPolicy: 'None',
           },
-          secretKey: 'RR_AIRTABLE_ACCESS_TOKEN',
+          secretKey: 'DE_AIRTABLE_ACCESS_TOKEN',
         },
       ],
       refreshInterval: '1h',
@@ -247,7 +247,7 @@ function(
       data: [
         {
           remoteRef: {
-            key: 'regelrett-defaults',
+            key: 'demo-defaults',
             metadataPolicy: 'None',
           },
           secretKey: 'defaults.yaml',
@@ -281,12 +281,12 @@ function(
     apiVersion: 'nais.io/v1',
     kind: 'AzureAdApplication',
     metadata: {
-      name: 'regelrett-service-entraid',
-      namespace: 'regelrett-main',
+      name: 'demo-service-entraid',
+      namespace: 'demo-main',
     },
     spec: {
       claims: {
-        groups: [{ id: 'a6578085-e0ee-4168-bf97-1b3026f6f3bd' }],  //legger til kartverket i groups, for å assigne alle i kartverket til RR.
+        groups: [{ id: 'adsfdsa-gdadf-12346g-dadhjj' }],  //legger til kartverket i groups, for å assigne alle i kartverket til RR.
       },
       replyUrls: [
         {
@@ -297,8 +297,8 @@ function(
         {
           cluster: ' ',
           namespace: ' ',
-          application: if env == 'dev' then '3129a75a-aad3-4fec-b972-61d1b7c21e6c'
-          else if env == 'prod' then 'feafce12-89c6-4ffe-8bc6-98cb5c6fa2bf',
+          application: if env == 'dev' then '123456789-asdfghjkl-ddsddw'
+          else if env == 'prod' then 'asdfg-12345-qwerty-45678',
         },
       ],
       secretName: kubernetesSecretEntraIdSecretName,

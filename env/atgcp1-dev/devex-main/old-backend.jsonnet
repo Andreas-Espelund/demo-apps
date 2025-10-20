@@ -1,4 +1,4 @@
-local application = import '../../../applications/backend.libsonnet';
+local application = import '../../../applications/old-backend.libsonnet';
 
 local cloudSqlConfig = import '../../../utils/cloudSql.libsonnet';
 local version = '1.2.3.4';
