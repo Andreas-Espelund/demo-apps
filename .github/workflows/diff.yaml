@@ -70,7 +70,7 @@ jobs:
             ```diff
             ${{ env.DIFF_OUTPUT_PROD }}
             ```
-          comment-tag: diff
+          comment-tag: prod-diff
 
       - name: Kommenterer dev diff til PR
         uses: thollander/actions-comment-pull-request@v3
@@ -82,4 +82,4 @@ jobs:
             ```diff
             ${{ env.DIFF_OUTPUT_DEV }}
             ```
-          comment-tag: diff
+          comment-tag: dev-diff
