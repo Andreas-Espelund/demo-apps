@@ -55,16 +55,48 @@ jobs:
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
-      - name: Post/Update or Delete PROD diff comment
+      # PROD
+      - name: Post/Update PROD diff comment
+        if: ${{ env.DIFF_OUTPUT_PROD != '' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           comment-tag: prod-diff
-          enable-find-comment: true
-          message: ${{ env.DIFF_OUTPUT_PROD != '' && format('> [!CAUTION]\n> <h1> Denne PR-en treffer produksjon.</h1>\n\n```diff\n{0}\n```', env.DIFF_OUTPUT_PROD) || '' }}
+          mode: upsert
+          create-if-not-exists: true
+          message: |
+            > [!CAUTION]
+            > <h1> Denne PR-en treffer produksjon.</h1>
 
-      - name: Post/Update or Delete DEV diff comment
+            ```diff
+            ${{ env.DIFF_OUTPUT_PROD }}
+            ```
+
+      - name: Delete PROD diff comment if empty
+        if: ${{ env.DIFF_OUTPUT_PROD == '' }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: prod-diff
+          mode: delete
+
+      # DEV
+      - name: Post/Update DEV diff comment
+        if: ${{ env.DIFF_OUTPUT_DEV != '' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           comment-tag: dev-diff
-          enable-find-comment: true
-          message: ${{ env.DIFF_OUTPUT_DEV != '' && format('> [!NOTE]\n> <h1> Denne PR-en treffer:</h1>\n\n```diff\n{0}\n```', env.DIFF_OUTPUT_DEV) || '' }}
+          mode: upsert
+          create-if-not-exists: true
+          message: |
+            > [!NOTE]
+            > <h1> Denne PR-en treffer:</h1>
+
+            ```diff
+            ${{ env.DIFF_OUTPUT_DEV }}
+            ```
+
+      - name: Delete DEV diff comment if empty
+        if: ${{ env.DIFF_OUTPUT_DEV == '' }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: dev-diff
+          mode: delete
