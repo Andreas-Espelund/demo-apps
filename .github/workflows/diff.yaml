@@ -10,4 +10,4 @@ jobs:
     name: diff
     uses: Andreas-Espelund/github-workflows/.github/workflows/diff-manifests.yaml@diff-to-comment
     with:
-      path: env
+      path: test-env
