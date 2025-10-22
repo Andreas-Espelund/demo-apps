@@ -147,7 +147,7 @@ jobs:
             > <h1> Denne PR-en treffer produksjon.</h1>
 
             ```diff
-            ${{ env.DIFF_OUTPUT_PROD }}
+            ${{ env.DIFF_MD_PROD }}
             ```
           comment-tag: prod-diff
 
@@ -159,6 +159,6 @@ jobs:
             > <h1> Denne PR-en treffer:</h1>
 
             ```diff
-            ${{ env.DIFF_OUTPUT_DEV }}
+            ${{ env.DIFF_MD_DEV }}
             ```
           comment-tag: dev-diff
