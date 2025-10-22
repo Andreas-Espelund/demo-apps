@@ -41,7 +41,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Collect raw diffs
           DIFF_OUTPUT_PROD="$(
               find test-env -maxdepth 1 -type d -name '*-prod' -print0 | sort -z \
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
@@ -52,62 +51,12 @@ jobs:
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
           )"
 
-          to_simple_md() {
-              awk '
-                  BEGIN {
-                      in_block = 0
-                      first = 1
-                  }
-                  # New file starts when we see --- remote ...
-                  /^---[ \t]+remote[ \t]+/ {
-                      # Close previous block if open
-                      if (in_block) {
-                          print "```"
-                          print ""
-                      }
-                      in_block = 1
-
-                      # Extract filename for the header
-                      file = $0
-                      sub(/^---[ \t]+remote[ \t]+/, "", file)
-
-                      # Header for this file
-                      print "> " file
-                      print "```diff"
-
-                      # Also include the current line inside the diff block
-                      print $0
-                      next
-                  }
-                  {
-                      if (in_block) {
-                          print $0
-                      }
-                  }
-                  END {
-                      if (in_block) {
-                          print "```"
-                          print ""
-                      }
-                  }
-              '
-          }
-
-          DIFF_MD_PROD="$(printf "%s" "$DIFF_OUTPUT_PROD" | to_simple_md)"
-          DIFF_MD_DEV="$(printf "%s" "$DIFF_OUTPUT_DEV" | to_simple_md)"
-
           {
               echo 'DIFF_OUTPUT_PROD<<EOF'
               echo "$DIFF_OUTPUT_PROD"
               echo 'EOF'
               echo 'DIFF_OUTPUT_DEV<<EOF'
               echo "$DIFF_OUTPUT_DEV"
-              echo 'EOF'
-              echo 'DIFF_MD_PROD<<EOF'
-              echo "$DIFF_MD_PROD"
-              echo 'EOF'
-              echo 'DIFF_MD_DEV<<EOF'
-              echo "$DIFF_MD_DEV"
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
@@ -117,7 +66,10 @@ jobs:
           message: |
             > [!CAUTION]
             > <h1> Denne PR-en treffer produksjon.</h1>
-            ${{ env.DIFF_MD_PROD}}
+
+            ```diff
+            ${{ env.DIFF_OUTPUT_PROD }}
+            ```
           comment-tag: prod-diff
 
       - name: Kommenterer dev diff til PR
@@ -126,5 +78,8 @@ jobs:
           message: |
             > [!NOTE]
             > <h1> Denne PR-en treffer:</h1>
-            ${{ env.DIFF_MD_DEV }}
+
+            ```diff
+            ${{ env.DIFF_OUTPUT_DEV }}
+            ```
           comment-tag: dev-difff
