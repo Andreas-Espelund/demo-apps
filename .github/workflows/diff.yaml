@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          # 1) Collect raw diffs (unchanged logic)
+          # Collect raw diffs
           DIFF_OUTPUT_PROD="$(
               find test-env -maxdepth 1 -type d -name '*-prod' -print0 | sort -z \
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
@@ -52,78 +52,54 @@ jobs:
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
           )"
 
-          # 2) Function to convert unified diff into collapsible per-file Markdown
-          to_collapsible_md() {
-              # Reads unified diff from stdin and writes GitHub Markdown to stdout
+          # Convert unified diff to:
+          # > filename
+          # ```diff
+          # <raw chunk>
+          # ```
+          to_simple_md() {
               awk '
                   BEGIN {
-                      in_file = 0
-                      remote = ""
-                      localf = ""
+                      in_block = 0
+                      file = ""
+                      n = 0
                   }
-                  # Start of a new file block when we see --- and +++ pairs
+                  # When we see a new file start, flush previous
                   /^---[ \t]+remote[ \t]+/ {
-                      # If we were in a previous block, close it
-                      if (in_file) {
-                          print "```diff"
-                          for (i=1; i<=nlines; i++) print lines[i]
+                      if (in_block) {
                           print "```"
-                          print "</details>"
                           print ""
                       }
-                      in_file = 1
-                      nlines = 0
-                      remote = $0
-                      # Extract filename from the line (after the last space)
-                      # Example: --- remote /test-env/atkv3-prod/devex-main/app-b.jsonnet
-                      # Capture path by removing leading markers
+                      in_block = 1
+                      n = 0
+                      # Extract filename after marker
                       file = $0
                       sub(/^---[ \t]+remote[ \t]+/, "", file)
-                      summary = file
+                      # Start header for this file
+                      print "> " file
+                      print "```diff"
+                      # Also include this line inside the diff block
+                      print $0
                       next
                   }
-                  /^\+\+\+[ \t]+local[ \t]+/ {
-                      localf = $0
-                      # We have both paths now; open a details with filename
-                      # Prefer the path from +++ local as it reflects "local" side
-                      fileLocal = $0
-                      sub(/^\+\+\+[ \t]+local[ \t]+/, "", fileLocal)
-                      # If empty for some reason, fall back to remote
-                      if (fileLocal == "") fileLocal = summary
-                      # Escape HTML in summary minimal (filenames typically safe)
-                      gsub(/&/,"&amp;", fileLocal)
-                      gsub(/</,"&lt;", fileLocal)
-                      gsub(/>/,"&gt;", fileLocal)
-
-                      print "<details>"
-                      print "<summary><code>" fileLocal "</code></summary>"
-                      print ""
-                      next
-                  }
-                  # Collect all hunk lines and context after +++ line until next --- remote
+                  # Continue printing all lines while in a block
                   {
-                      if (in_file) {
-                          nlines++
-                          lines[nlines] = $0
+                      if (in_block) {
+                          print $0
                       }
                   }
                   END {
-                      if (in_file) {
-                          print "```diff"
-                          for (i=1; i<=nlines; i++) print lines[i]
+                      if (in_block) {
                           print "```"
-                          print "</details>"
-                          print ""
                       }
                   }
               '
           }
 
-          # 3) Build Markdown variants
-          DIFF_MD_PROD="$(printf "%s" "$DIFF_OUTPUT_PROD" | to_collapsible_md)"
-          DIFF_MD_DEV="$(printf "%s" "$DIFF_OUTPUT_DEV" | to_collapsible_md)"
+          DIFF_MD_PROD="$(printf "%s" "$DIFF_OUTPUT_PROD" | to_simple_md)"
+          DIFF_MD_DEV="$(printf "%s" "$DIFF_OUTPUT_DEV" | to_simple_md)"
 
-          # 4) Export to environment
+          # Export both raw and MD (keep raw in case you still need it)
           {
               echo 'DIFF_OUTPUT_PROD<<EOF'
               echo "$DIFF_OUTPUT_PROD"
