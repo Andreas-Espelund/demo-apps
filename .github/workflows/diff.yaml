@@ -38,4 +38,16 @@ jobs:
       - name: Run diff CLI against main
         run: |
           set -euo pipefail
-          skipctl manifests diff -p env/atgcp1-dev/devex-main/service.jsonnet --ref origin/main --diff-format patch
+          DIFF_OUTPUT="$(skipctl manifests diff -p env/atgcp1-dev/devex-main/service.jsonnet --ref origin/main --diff-format patch)"
+
+      - name: Kommenterer diff til PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            > [!CAUTION]
+            > <h1> Denne PR-en treffer produksjon.</h1>
+            ```diff
+            ${{ env.DIFF_OUTPUT }}
+            ```
+
+          comment-tag: diff
