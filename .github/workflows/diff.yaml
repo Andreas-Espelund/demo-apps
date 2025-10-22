@@ -1,102 +1,10 @@
-name: Diff file against main
+name: Diff manifests
 
-on:
-  pull_request:
+on: pull_request
 
 jobs:
-  diff-file:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-
-    steps:
-      - name: Checkout current branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.ref }}
-          submodules: true
-
-      - name: Show refs (debug)
-        run: |
-          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
-          echo "Current SHA: $(git rev-parse HEAD)"
-          echo "Main SHA: $(git rev-parse origin/main)"
-
-      - name: Install `skipctl` @ v1.5.0
-        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
-        with:
-          repo: kartverket/skipctl
-          tag: v1.5.0
-          cache: enable
-
-      - name: Run diff CLI against main
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          DIFF_OUTPUT_PROD="$(
-              find test-env -maxdepth 1 -type d -name '*-prod' -print0 | sort -z \
-              | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
-          )"
-
-          DIFF_OUTPUT_DEV="$(
-              find test-env -maxdepth 1 -type d -name '*-dev' -print0 | sort -z \
-              | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
-          )"
-
-          {
-              echo 'DIFF_OUTPUT_PROD<<EOF'
-              echo "$DIFF_OUTPUT_PROD"
-              echo 'EOF'
-              echo 'DIFF_OUTPUT_DEV<<EOF'
-              echo "$DIFF_OUTPUT_DEV"
-              echo 'EOF'
-          } >> "$GITHUB_ENV"
-
-      # PROD
-      - name: Post/Update PROD diff comment
-        if: ${{ env.DIFF_OUTPUT_PROD != '' }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          comment-tag: prod-diff
-          mode: upsert
-          create-if-not-exists: true
-          message: |
-            > [!CAUTION]
-            > <h1> Denne PR-en treffer produksjon.</h1>
-
-            ```diff
-            ${{ env.DIFF_OUTPUT_PROD }}
-            ```
-
-      - name: Delete PROD diff comment if empty
-        if: ${{ env.DIFF_OUTPUT_PROD == '' }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          comment-tag: prod-diff
-          mode: delete
-
-      # DEV
-      - name: Post/Update DEV diff comment
-        if: ${{ env.DIFF_OUTPUT_DEV != '' }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          comment-tag: dev-diff
-          mode: upsert
-          create-if-not-exists: true
-          message: |
-            > [!NOTE]
-            > <h1> Denne PR-en treffer:</h1>
-
-            ```diff
-            ${{ env.DIFF_OUTPUT_DEV }}
-            ```
-
-      - name: Delete DEV diff comment if empty
-        if: ${{ env.DIFF_OUTPUT_DEV == '' }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          comment-tag: dev-diff
-          mode: delete
+  diff:
+    name: diff
+    uses: Andreas-Espelund/github-workflows/.github/workflows/diff-manifests.yaml@diff-to-comment
+    with:
+      path: env
