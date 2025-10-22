@@ -40,10 +40,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          OUT="$(skipctl manifests diff -p test-env --ref origin/main --diff-format patch || true)"
+
+          DIFF_OUTPUT_PROD="$(
+              find test-env -maxdepth 1 -type d -name '*-prod' -print0 | sort -z \
+              | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
+          )"
+
+          DIFF_OUTPUT_DEV="$(
+              find test-env -maxdepth 1 -type d -name '*-dev' -print0 | sort -z \
+              | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
+          )"
+
           {
-              echo 'DIFF_OUTPUT<<EOF'
-              echo "$OUT"
+              echo 'DIFF_OUTPUT_PROD<<EOF'
+              echo "$DIFF_OUTPUT_PROD"
+              echo 'EOF'
+              echo 'DIFF_OUTPUT_DEV<<EOF'
+              echo "$DIFF_OUTPUT_DEV"
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
@@ -52,7 +65,13 @@ jobs:
         with:
           message: |
             # Diff against origin/main
+            ## This will hit PROD
             ```diff
-            ${{ env.DIFF_OUTPUT }}
+            ${{ env.DIFF_OUTPUT_PROD }}
+            ```
+
+            ## This will hit DEV
+            ```diff
+            ${{ env.DIFF_OUTPUT_PROD }}
             ```
           comment-tag: diff
