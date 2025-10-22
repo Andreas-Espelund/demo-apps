@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          OUT="$(skipctl manifests diff -p env/atgcp1-dev/devex-main/service.jsonnet --ref origin/main --diff-format patch || true)"
+          OUT="$(skipctl manifests diff -p test-env --ref origin/main --diff-format patch || true)"
           {
               echo 'DIFF_OUTPUT<<EOF'
               echo "$OUT"
