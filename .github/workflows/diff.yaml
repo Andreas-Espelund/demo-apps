@@ -50,5 +50,5 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
-            ${{ env.DIFF_OUTPUT }}
+            HELLO WORLD
           comment-tag: diff
