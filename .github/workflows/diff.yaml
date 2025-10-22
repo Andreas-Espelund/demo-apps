@@ -64,13 +64,15 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
-            # Diff against origin/main
-            ## This will hit PROD
+            > [!CAUTION]
+            > <h1> Denne PR-en treffer produksjon.</h1>
+
+            ## Endringer i PROD
             ```diff
             ${{ env.DIFF_OUTPUT_PROD }}
             ```
 
-            ## This will hit DEV
+            ## Endringer i DEV
             ```diff
             ${{ env.DIFF_OUTPUT_DEV }}
             ```
