@@ -41,6 +41,7 @@ jobs:
         run: |
           set -euo pipefail
 
+          # 1) Collect raw diffs (unchanged logic)
           DIFF_OUTPUT_PROD="$(
               find test-env -maxdepth 1 -type d -name '*-prod' -print0 | sort -z \
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
@@ -51,12 +52,90 @@ jobs:
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
           )"
 
+          # 2) Function to convert unified diff into collapsible per-file Markdown
+          to_collapsible_md() {
+              # Reads unified diff from stdin and writes GitHub Markdown to stdout
+              awk '
+                  BEGIN {
+                      in_file = 0
+                      remote = ""
+                      localf = ""
+                  }
+                  # Start of a new file block when we see --- and +++ pairs
+                  /^---[ \t]+remote[ \t]+/ {
+                      # If we were in a previous block, close it
+                      if (in_file) {
+                          print "```diff"
+                          for (i=1; i<=nlines; i++) print lines[i]
+                          print "```"
+                          print "</details>"
+                          print ""
+                      }
+                      in_file = 1
+                      nlines = 0
+                      remote = $0
+                      # Extract filename from the line (after the last space)
+                      # Example: --- remote /test-env/atkv3-prod/devex-main/app-b.jsonnet
+                      # Capture path by removing leading markers
+                      file = $0
+                      sub(/^---[ \t]+remote[ \t]+/, "", file)
+                      summary = file
+                      next
+                  }
+                  /^\+\+\+[ \t]+local[ \t]+/ {
+                      localf = $0
+                      # We have both paths now; open a details with filename
+                      # Prefer the path from +++ local as it reflects "local" side
+                      fileLocal = $0
+                      sub(/^\+\+\+[ \t]+local[ \t]+/, "", fileLocal)
+                      # If empty for some reason, fall back to remote
+                      if (fileLocal == "") fileLocal = summary
+                      # Escape HTML in summary minimal (filenames typically safe)
+                      gsub(/&/,"&amp;", fileLocal)
+                      gsub(/</,"&lt;", fileLocal)
+                      gsub(/>/,"&gt;", fileLocal)
+
+                      print "<details>"
+                      print "<summary><code>" fileLocal "</code></summary>"
+                      print ""
+                      next
+                  }
+                  # Collect all hunk lines and context after +++ line until next --- remote
+                  {
+                      if (in_file) {
+                          nlines++
+                          lines[nlines] = $0
+                      }
+                  }
+                  END {
+                      if (in_file) {
+                          print "```diff"
+                          for (i=1; i<=nlines; i++) print lines[i]
+                          print "```"
+                          print "</details>"
+                          print ""
+                      }
+                  }
+              '
+          }
+
+          # 3) Build Markdown variants
+          DIFF_MD_PROD="$(printf "%s" "$DIFF_OUTPUT_PROD" | to_collapsible_md)"
+          DIFF_MD_DEV="$(printf "%s" "$DIFF_OUTPUT_DEV" | to_collapsible_md)"
+
+          # 4) Export to environment
           {
               echo 'DIFF_OUTPUT_PROD<<EOF'
               echo "$DIFF_OUTPUT_PROD"
               echo 'EOF'
               echo 'DIFF_OUTPUT_DEV<<EOF'
               echo "$DIFF_OUTPUT_DEV"
+              echo 'EOF'
+              echo 'DIFF_MD_PROD<<EOF'
+              echo "$DIFF_MD_PROD"
+              echo 'EOF'
+              echo 'DIFF_MD_DEV<<EOF'
+              echo "$DIFF_MD_DEV"
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
