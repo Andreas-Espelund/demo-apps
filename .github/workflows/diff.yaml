@@ -60,19 +60,25 @@ jobs:
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
-      - name: Kommenterer diff til PR
+      - name: Kommenterer prod diff til PR
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
             > [!CAUTION]
             > <h1> Denne PR-en treffer produksjon.</h1>
 
-            ## Endringer i PROD
             ```diff
             ${{ env.DIFF_OUTPUT_PROD }}
             ```
+          comment-tag: diff
 
-            ## Endringer i DEV
+      - name: Kommenterer dev diff til PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            > [!NOTE]
+            > <h1> Denne PR-en treffer:</h1>
+
             ```diff
             ${{ env.DIFF_OUTPUT_DEV }}
             ```
