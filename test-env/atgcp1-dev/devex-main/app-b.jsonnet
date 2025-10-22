@@ -1,4 +1,4 @@
 {
   name: 'app-a',
-  env: 'test',
+  env: 'dev',
 }
