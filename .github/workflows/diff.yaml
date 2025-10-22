@@ -15,6 +15,7 @@ jobs:
         with:
           fetch-depth: 0 # full history so refs like 'main' exist
           ref: ${{ github.ref }}
+          submodules: true
 
       # - name: Ensure main is fetched
       #   run: |
