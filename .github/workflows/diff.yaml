@@ -46,8 +46,6 @@ jobs:
           message: |
             > [!CAUTION]
             > <h1> Denne PR-en treffer produksjon.</h1>
-            ```diff
-            ${{ env.DIFF_OUTPUT }}
-            ```
+            > ```diff ${{ env.DIFF_OUTPUT }} ```
 
           comment-tag: diff
