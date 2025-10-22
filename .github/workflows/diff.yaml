@@ -51,7 +51,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
-            # Diff
+            > # Diff
             ```diff
             ${{ env.DIFF_OUTPUT }}
             ```
