@@ -4,6 +4,8 @@ on: pull_request
 
 jobs:
   diff:
+    permissions:
+      pull-requests: write
     name: diff
     uses: Andreas-Espelund/github-workflows/.github/workflows/diff-manifests.yaml@diff-to-comment
     with:
