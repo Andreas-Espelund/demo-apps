@@ -50,8 +50,11 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
-            > [!CAUTION]
-            > <h1> Denne PR-en treffer produksjon.</h1>
-            > ```diff ${{ env.DIFF_OUTPUT }} ```
+            [!CAUTION]
+            <h1>Denne PR-en treffer produksjon.</h1>
+
+            ~~~diff
+            ${{ env.DIFF_OUTPUT }}
+            ~~~
 
           comment-tag: diff
