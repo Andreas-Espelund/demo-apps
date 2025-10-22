@@ -52,37 +52,33 @@ jobs:
               | xargs -0 -I{} bash -c 'skipctl manifests diff -p "{}" --ref origin/main --diff-format patch || true'
           )"
 
-          # Convert unified diff to:
-          # > filename
-          # ```diff
-          # <raw chunk>
-          # ```
           to_simple_md() {
               awk '
                   BEGIN {
                       in_block = 0
-                      file = ""
-                      n = 0
+                      first = 1
                   }
-                  # When we see a new file start, flush previous
+                  # New file starts when we see --- remote ...
                   /^---[ \t]+remote[ \t]+/ {
+                      # Close previous block if open
                       if (in_block) {
                           print "```"
                           print ""
                       }
                       in_block = 1
-                      n = 0
-                      # Extract filename after marker
+
+                      # Extract filename for the header
                       file = $0
                       sub(/^---[ \t]+remote[ \t]+/, "", file)
-                      # Start header for this file
+
+                      # Header for this file
                       print "> " file
                       print "```diff"
-                      # Also include this line inside the diff block
+
+                      # Also include the current line inside the diff block
                       print $0
                       next
                   }
-                  # Continue printing all lines while in a block
                   {
                       if (in_block) {
                           print $0
@@ -91,6 +87,7 @@ jobs:
                   END {
                       if (in_block) {
                           print "```"
+                          print ""
                       }
                   }
               '
@@ -99,7 +96,6 @@ jobs:
           DIFF_MD_PROD="$(printf "%s" "$DIFF_OUTPUT_PROD" | to_simple_md)"
           DIFF_MD_DEV="$(printf "%s" "$DIFF_OUTPUT_DEV" | to_simple_md)"
 
-          # Export both raw and MD (keep raw in case you still need it)
           {
               echo 'DIFF_OUTPUT_PROD<<EOF'
               echo "$DIFF_OUTPUT_PROD"
@@ -121,10 +117,7 @@ jobs:
           message: |
             > [!CAUTION]
             > <h1> Denne PR-en treffer produksjon.</h1>
-
-            ```diff
-            ${{ env.DIFF_MD_PROD }}
-            ```
+            ${{ env.DIFF_MD_PROD}}
           comment-tag: prod-diff
 
       - name: Kommenterer dev diff til PR
@@ -133,8 +126,5 @@ jobs:
           message: |
             > [!NOTE]
             > <h1> Denne PR-en treffer:</h1>
-
-            ```diff
             ${{ env.DIFF_MD_DEV }}
-            ```
-          comment-tag: dev-diff
+          comment-tag: dev-difff
