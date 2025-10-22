@@ -36,9 +36,15 @@ jobs:
           cache: enable
 
       - name: Run diff CLI against main
+        shell: bash
         run: |
           set -euo pipefail
-          DIFF_OUTPUT="$(skipctl manifests diff -p env/atgcp1-dev/devex-main/service.jsonnet --ref origin/main --diff-format patch)"
+          OUT="$(skipctl manifests diff -p env/atgcp1-dev/devex-main/service.jsonnet --ref origin/main --diff-format patch || true)"
+          {
+              echo 'DIFF_OUTPUT<<EOF'
+              echo "$OUT"
+              echo 'EOF'
+          } >> "$GITHUB_ENV"
 
       - name: Kommenterer diff til PR
         uses: thollander/actions-comment-pull-request@v3
