@@ -82,4 +82,4 @@ jobs:
             ```diff
             ${{ env.DIFF_OUTPUT_DEV }}
             ```
-          comment-tag: dev-difff
+          comment-tag: dev-diff
