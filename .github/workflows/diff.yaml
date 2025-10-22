@@ -55,28 +55,16 @@ jobs:
               echo 'EOF'
           } >> "$GITHUB_ENV"
 
-      - name: Kommenterer prod diff til PR
-        if: ${{ env.DIFF_OUTPUT_PROD != '' }}
+      - name: Post/Update or Delete PROD diff comment
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: |
-            > [!CAUTION]
-            > <h1> Denne PR-en treffer produksjon.</h1>
-
-            ```diff
-            ${{ env.DIFF_OUTPUT_PROD }}
-            ```
           comment-tag: prod-diff
+          enable-find-comment: true
+          message: ${{ env.DIFF_OUTPUT_PROD != '' && format('> [!CAUTION]\n> <h1> Denne PR-en treffer produksjon.</h1>\n\n```diff\n{0}\n```', env.DIFF_OUTPUT_PROD) || '' }}
 
-      - name: Kommenterer dev diff til PR
-        if: ${{ env.DIFF_OUTPUT_DEV != '' }}
+      - name: Post/Update or Delete DEV diff comment
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: |
-            > [!NOTE]
-            > <h1> Denne PR-en treffer:</h1>
-
-            ```diff
-            ${{ env.DIFF_OUTPUT_DEV }}
-            ```
           comment-tag: dev-diff
+          enable-find-comment: true
+          message: ${{ env.DIFF_OUTPUT_DEV != '' && format('> [!NOTE]\n> <h1> Denne PR-en treffer:</h1>\n\n```diff\n{0}\n```', env.DIFF_OUTPUT_DEV) || '' }}
