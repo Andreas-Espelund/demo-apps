@@ -8,6 +8,6 @@ jobs:
       contents: read
       pull-requests: write
     name: diff-manifests
-    uses: Andreas-Espelund/github-workflows/.github/workflows/diff-manifests.yaml@diff-to-comment
+    uses: Andreas-Espelund/github-workflows/.github/workflows/manifest-diff-to-pr-comment.yaml@diff-to-comment
     with:
       path: env
