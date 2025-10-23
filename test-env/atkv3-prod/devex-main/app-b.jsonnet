@@ -1,5 +1,5 @@
 {
   name: 'app-a',
   env: 'dev',
-  label: 'prod label 13',
+  label: 'prod label 133',
 }
