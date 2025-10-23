@@ -1,5 +1,5 @@
 {
   name: 'app-a',
   env: 'dev',
-  test: 'hellos12',
+  test: 'hellos122',
 }
