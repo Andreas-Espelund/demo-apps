@@ -1,4 +1,4 @@
 {
   name: 'app-a',
-  env: 'prod',
+  env: 'prod super duper 2 ',
 }
