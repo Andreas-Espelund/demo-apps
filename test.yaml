@@ -1,0 +1,13 @@
+name: Diff manifests
+
+on: pull_request
+
+jobs:
+  diff-manifests:
+    permissions:
+      contents: read
+      pull-requests: write
+    name: diff-manifests
+    uses: Andreas-Espelund/github-workflows/.github/workflows/diff-manifests.yaml@diff-to-comment
+    with:
+      path: env
