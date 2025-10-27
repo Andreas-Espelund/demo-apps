@@ -8,3 +8,7 @@ jobs:
       contents: read
       pull-requests: write
     uses: kartverket/github-workflows/.github/workflows/manifest-diff-to-pr-comment.yaml@9d8665ffa5f9b945abd253e6190f2214d9176d2b
+    with:
+      path: env # set custom dir for manifest files
+      ref: origin/main # specify what gif ref to diff against
+      skipctl-version: latest # use other skipctl version
