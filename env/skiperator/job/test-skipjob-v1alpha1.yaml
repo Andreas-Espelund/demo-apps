@@ -4,7 +4,7 @@ metadata:
   name: test-job-cron  # Different name
   namespace: test
   labels:
-    version: "v1"
+    version: "v2"
 spec:
   container:
     image: busybox:latest
