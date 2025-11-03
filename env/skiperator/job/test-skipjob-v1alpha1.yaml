@@ -1,17 +1,16 @@
 apiVersion: skiperator.kartverket.no/v1alpha1  # Change API version
 kind: SKIPJob
 metadata:
-  name: test-job-cron
+  name: test-job
   namespace: test
   labels:
     version: "v1alpha1"
 spec:
   container:
-  # Remove container wrapper - flatten structure
-  image: busybox:latest
-  command: ["echo", "Using v1alpha1"]
-  cron:
-    schedule: "*/10 * * *"
-    suspend: true
+    image: busybox:latest
+    command: ["echo", "Using v1alpha1"]
+    cron:
+      schedule: "*/10 * * *"
+      suspend: true
   job:
     ttlSecondsAfterFinished: 100
