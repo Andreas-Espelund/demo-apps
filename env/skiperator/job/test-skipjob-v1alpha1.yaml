@@ -1,16 +1,16 @@
-apiVersion: skiperator.kartverket.no/v1alpha1
+apiVersion: skiperator.kartverket.no/v1beta1  # Change API version
 kind: SKIPJob
 metadata:
-  name: test-job-cron  # Different name
+  name: test-job-cron
   namespace: test
   labels:
-    version: "v2"
+    version: "v3-beta"
 spec:
-  container:
-    image: busybox:latest
-    command: ["echo", "ArgoCD autosync test - version 1"]
+  # Remove container wrapper - flatten structure
+  image: busybox:latest
+  command: ["echo", "Now using v1beta1 directly!"]
   cron:
-    schedule: "*/10 * * *"  # Fixed your typo: was "*/2* * * *"
+    schedule: "*/10 * * *"
     suspend: true
   job:
     ttlSecondsAfterFinished: 100
