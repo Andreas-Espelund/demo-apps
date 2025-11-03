@@ -2,7 +2,12 @@ apiVersion: skiperator.kartverket.no/v1alpha1
 kind: SKIPJob
 metadata:
   name: test-job-alpha
+  namespace: test  # Add explicit namespace
+  labels:
+    test-update: "trigger-reconcile"  # Add a label to force update
 spec:
   container:
     image: busybox:latest
-    command: ["echo", "hello world"]
+    command: ["echo", "hello world - updated"]
+  job:
+    ttlSecondsAfterFinished: 100  # Add job config to ensure it runs
