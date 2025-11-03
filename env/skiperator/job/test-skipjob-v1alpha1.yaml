@@ -1,8 +1,5 @@
 apiVersion: skiperator.kartverket.no/v1alpha1
 kind: SKIPJob
-metadata:
-  name: test-job-alpha
-  namespace: skiperator
 spec:
   container:
     image: busybox:latest
