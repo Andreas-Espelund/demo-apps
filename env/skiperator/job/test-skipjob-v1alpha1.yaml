@@ -1,7 +1,7 @@
 apiVersion: skiperator.kartverket.no/v1alpha1
 kind: SKIPJob
 metadata:
-  name: test-job-alpha
+  name: test-job-cron  # Different name
   namespace: test
   labels:
     version: "v1"
@@ -10,7 +10,7 @@ spec:
     image: busybox:latest
     command: ["echo", "ArgoCD autosync test - version 1"]
   cron:
-    schedule: "*/2* * * *"  # Every 10 minutes
-    suspend: true  # Won't run, just for testing
+    schedule: "*/10 * * *"  # Fixed your typo: was "*/2* * * *"
+    suspend: true
   job:
     ttlSecondsAfterFinished: 100
