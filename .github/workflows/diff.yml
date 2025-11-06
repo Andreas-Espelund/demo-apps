@@ -7,4 +7,4 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: kartverket/github-workflows/.github/workflows/manifest-diff-to-pr-comment.yaml@latest
+    uses: andreas-espelund/github-workflows/.github/workflows/manifest-diff-to-pr-comment.yaml@b41089cd0cb3c58aecc645f488a003c62ae9899d
