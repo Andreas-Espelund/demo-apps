@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: example
 data:
-  hello: world
+  hello: world–hello
+  potato-mode: true
