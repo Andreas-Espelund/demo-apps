@@ -1,0 +1,14 @@
+name: Manifests diff to PR comment
+
+on: pull_request
+
+jobs:
+  diff-manifests:
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: andreas-espelund/github-workflows/.github/workflows/manifest-diff-to-pr-comment.yaml@bugfix/diff-to-comment
+    with:
+      path: env # set custom dir for manifest files
+      ref: origin/main # specify what gif ref to diff against
+      skipctl-version: latest # use other skipctl version

@@ -1,4 +1,10 @@
 {
   name: 'app-a',
-  env: 'prod',
+  env: 'prod super duper 2 ',
+  spec: {
+    testing: true,
+    working: 'dont know buddy',
+  },
+
+
 }

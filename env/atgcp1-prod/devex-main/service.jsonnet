@@ -2,6 +2,6 @@ local service = import '../../../applications/service.libsonnet';
 
 service(
   name='backup-service',
-  env='dev',
-  version='2.20.3'
+  env='prod',
+  version='1.15.3'
 )
