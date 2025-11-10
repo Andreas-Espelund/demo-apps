@@ -7,6 +7,7 @@
   spec: {
     image: '1.2.3.4',
     meta: 20000,
+    potato_mode: false,
     //port: 3000,
   },
 }
