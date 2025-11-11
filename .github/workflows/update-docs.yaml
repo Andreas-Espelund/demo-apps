@@ -3,6 +3,10 @@ name: Update documentation
 on:
   pull_request:
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   update-docs:
     name: Update documentation in target repository
