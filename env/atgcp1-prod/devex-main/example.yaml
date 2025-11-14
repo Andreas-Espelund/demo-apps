@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: example for you my friend
 data:
-  hello: world
+  hello: world the main prod
