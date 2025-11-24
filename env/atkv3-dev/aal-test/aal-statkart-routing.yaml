@@ -1,0 +1,14 @@
+apiVersion: skiperator.kartverket.no/v1alpha1
+kind: Routing
+metadata:
+  name: aal-statktart-routing
+spec:
+  hostname: <AAL_HOSTNAME>
+  redirectToHTTPS: true
+  routes:
+    - pathPrefix: /backend
+      targetApp: aal-register
+      rewriteUri: false
+    - pathPrefix: /
+      targetApp: aal-klient
+      rewriteUri: false

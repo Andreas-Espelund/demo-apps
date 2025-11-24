@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: komreg-backend-sticky
+spec:
+  host: komreg-backend
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: ISTIO-STICKY
+          ttl: 60s

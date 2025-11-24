@@ -13,7 +13,7 @@ metadata:
   name: secret-reader
 subjects:
   - kind: User
-    name: lars.sorensen@kartverket.no
+    name: <USER_EMAIL>
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role

@@ -6,7 +6,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: sikkerhetsmetrikker.atgcp1-prod.kartverket-intern.cloud
+        - host: sikkerhetsmetrikker.atgcp1-prod.<INTERNAL_DOMAIN>
   podSettings:
     annotations:
       sidecar.istio.io/userVolume: '[{ "name": "istio-oauth2", "secret": { "secretName":
@@ -17,7 +17,7 @@ spec:
   port: 8501
   replicas: 1
   ingresses:
-    - repos.atgcp1-dev.kartverket-intern.cloud
+    - repos.atgcp1-dev.<INTERNAL_DOMAIN>
   filesFrom:
     - secret: streamlit-secrets
       mountPath: /.streamlit

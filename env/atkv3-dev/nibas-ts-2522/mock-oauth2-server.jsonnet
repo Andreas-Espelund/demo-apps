@@ -8,7 +8,7 @@
     spec: {
       image: 'ghcr.io/navikt/mock-oauth2-server:2.2.1@sha256:2418020949eefdf15e64e5dff74eaa7614de382ed7276564adb2c9b57f864169',
       port: 8080,
-      ingresses: ['mock-oauth2-server.atkv3-dev.kartverket-intern.cloud'],
+      ingresses: ['mock-oauth2-server.atkv3-dev.<INTERNAL_DOMAIN>'],
       replicas: {
         min: 1,
         max: 3,
