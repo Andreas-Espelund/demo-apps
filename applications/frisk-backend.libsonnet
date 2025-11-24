@@ -94,13 +94,13 @@ function(
           ],
           external: [
             {
-              host: 'login.microsoftonline.com',
+              host: '<MICROSOFT_LOGIN_HOST>',
             },
             {
-              host: 'graph.microsoft.com',
+              host: '<MICROSOFT_GRAPH_HOST>',
             },
             {
-              host: 'frisk-backend-db-dev',
+              host: '<DATABASE_HOST_NAME>',
               ip: databaseHost,
               ports: [
                 {

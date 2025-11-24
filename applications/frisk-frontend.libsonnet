@@ -23,12 +23,12 @@ function(name='frisk-frontend', env, version, VITE_CLIENT_ID) [
             },
           ],
           external: [
-            {
-                 host: 'graph.microsoft.com',
-            },
-            {
-                host: 'login.microsoftonline.com',
-            },
+      {
+         host: '<MICROSOFT_GRAPH_HOST>',
+      },
+      {
+        host: '<MICROSOFT_LOGIN_HOST>',
+      },
           ],
         },
       },
