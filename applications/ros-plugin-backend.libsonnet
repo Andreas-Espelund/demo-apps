@@ -102,19 +102,19 @@ function(
           ],
           external: [
             {
-              host: 'api.github.com',
+              host: '<GITHUB_API_HOST>',
             },
             {
-              host: 'oauth2.googleapis.com',
+              host: '<GOOGLE_OAUTH_HOST>',
             },
             {
-              host: 'cloudresourcemanager.googleapis.com',
+              host: '<GOOGLE_CLOUD_RESOURCE_MANAGER_HOST>',
             },
             {
-              host: 'kartverket.github.io',
+              host: '<DOCUMENTATION_HOST>',
             },
             {
-              host: 'hooks.slack.com',
+              host: '<SLACK_WEBHOOK_HOST>',
             },
             {
               host: if env == 'dev' then 'backstage.<DOMAIN_PREFIX>-dev.<DOMAIN_SUFFIX>' else if env == 'prod' then '<PROD_DOMAIN>',

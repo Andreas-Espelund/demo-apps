@@ -68,7 +68,7 @@ function(
               ],
             },
             {
-              host: 'login.microsoftonline.com',
+              host: '<MICROSOFT_LOGIN_HOST>',
             },
           ],
         },

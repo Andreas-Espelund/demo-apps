@@ -1,0 +1,23 @@
+apiVersion: skiperator.kartverket.no/v1alpha1
+kind: Application
+metadata:
+  name: repo-metrikker
+spec:
+  accessPolicy:
+    outbound:
+      external:
+        - host: sikkerhetsmetrikker.atgcp1-prod.kartverket-intern.cloud
+  podSettings:
+    annotations:
+      sidecar.istio.io/userVolume: '[{ "name": "istio-oauth2", "secret": { "secretName":
+        "authpolicy-envoy-secret" } }]'
+      sidecar.istio.io/userVolumeMount: '[{ "name": "istio-oauth2", "mountPath": "/etc/istio/config",
+        "readonly": true }]'
+  image: ghcr.io/kartverket/repo-metrikker-tools:sha-a6f4072c51417c48b5de596e28f7438c38f059af
+  port: 8501
+  replicas: 1
+  ingresses:
+    - repos.atgcp1-dev.kartverket-intern.cloud
+  filesFrom:
+    - secret: streamlit-secrets
+      mountPath: /.streamlit

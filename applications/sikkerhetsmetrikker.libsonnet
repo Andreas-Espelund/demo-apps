@@ -76,26 +76,26 @@ function(env, name, version, gcpAuth, clientId, gsmProjectId, gsm='<SECRET_STORE
           ],
           external: [
             {
-              host: 'api.github.com',
+              host: '<GITHUB_API_HOST>',
             },
             {
-              host: 'eu1.app.sysdig.com',
+              host: '<SYSDIG_HOST>',
             },
             {
               host: '<EXTERNAL_DOMAIN>',
             },
             {
-              host: 'login.microsoftonline.com',
+              host: '<MICROSOFT_LOGIN_HOST>',
             },
             {
-              host: 'hooks.slack.com',
+              host: '<SLACK_WEBHOOK_HOST>',
             },
             {
-              host: 'cloud.tenable.com',
+              host: '<TENABLE_HOST>',
             },
             {
-              host: if env == 'dev' then 'smapi-db-dev'
-              else if env == 'prod' then 'smapi-db-prod',
+              host: if env == 'dev' then '<DB_HOST_DEV>'
+              else if env == 'prod' then '<DB_HOST_PROD>',
               ip: dbHost,
               ports: [
                 {

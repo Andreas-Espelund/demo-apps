@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-internal-lb-access
+  namespace: ros-plugin-main
+spec:
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.142.3.10/32
+  podSelector:
+    matchLabels:
+      app: ros-plugin-backend
+  policyTypes:
+    - Egress

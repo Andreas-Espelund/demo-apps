@@ -117,13 +117,13 @@ function(
         outbound: {
           external: [
             {
-              host: 'api.airtable.com',
+              host: '<AIRTABLE_API_HOST>',
             },
             {
-              host: 'login.microsoftonline.com',
+              host: '<MICROSOFT_LOGIN_HOST>',
             },
             {
-              host: 'graph.microsoft.com',
+              host: '<MICROSOFT_GRAPH_HOST>',
             },
           ],
         },

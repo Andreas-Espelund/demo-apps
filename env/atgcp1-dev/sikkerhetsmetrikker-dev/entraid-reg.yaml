@@ -1,0 +1,11 @@
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: entraid-reg
+spec:
+  claims:
+    groups:
+      - id: 3194ca54-0a16-4326-9aa4-43414d8764ba
+  replyUrls:
+    - url: https://repos.atgcp1-dev.kartverket-intern.cloud/oauth2/callback
+  secretName: entraid-secret

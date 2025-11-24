@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: fine-grained-authorization
+spec:
+  workloadSelector:
+    labels:
+      app: sikkerhetsmetrikker
+  configPatches:
+    # The first patch adds the lua filter to the listener/http connection manager
+    - applyTo: HTTP_FILTER
+      match:
+        context: SIDECAR_INBOUND
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: INSERT_BEFORE
+        value: # lua filter specification
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+            inlineCode: |
+              function join(list, separator)
+                local tmp = { }
+                for key, value in ipairs(list) do
+                  tmp[#tmp+1] = tostring(value)
+                end
+                return table.concat(tmp, separator)
+              end
+              function isEmpty(s)
+                return s == nil or s == ''
+              end  
+              function envoy_on_request(request_handle)
+                local meta = request_handle:streamInfo():dynamicMetadata():get("envoy.filters.http.jwt_authn")
+                local iss, claims = next(meta)
+                if not isEmpty(claims) then
+                  if not isEmpty(claims.oid) then
+                    local userId = claims.oid
+                    request_handle:headers():replace("x-user-id", userId)
+                  end
+                  if not isEmpty(claims.groups) then
+                    local groups = join(claims.groups, ",")
+                    request_handle:headers():replace("x-groups", groups)
+                  end
+                  if not isEmpty(claims.roles) then
+                    local roles = join(claims.roles, ",")
+                    request_handle:headers():replace("x-roles", roles)
+                  end
+                end
+              end

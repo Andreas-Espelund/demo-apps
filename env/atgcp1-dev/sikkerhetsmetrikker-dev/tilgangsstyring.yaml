@@ -1,0 +1,28 @@
+apiVersion: ztoperator.kartverket.no/v1alpha1
+kind: AuthPolicy
+metadata:
+  name: authpolicy
+spec:
+  enabled: true
+  ignoreAuthRules:
+    - paths:
+        - "/open*"
+        - "/static*"
+        - "/_stcore*"
+  oAuthCredentials:
+    clientIDKey: AZURE_APP_CLIENT_ID
+    clientSecretKey: AZURE_APP_CLIENT_SECRET
+    secretRef: entraid-secret
+  autoLogin:
+    enabled: true
+    logoutPath: /logout
+    redirectPath: /oauth2/callback
+    scopes:
+      - <CLIENT_ID>/.default
+      - offline_access
+  audience:
+    - <CLIENT_ID>
+  wellKnownURI: https://login.microsoftonline.com/<TENANT_ID>/v2.0/.well-known/openid-configuration
+  selector:
+    matchLabels:
+      app: repo-metrikker

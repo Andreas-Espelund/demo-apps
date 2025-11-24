@@ -1,0 +1,16 @@
+apiVersion: nais.io/v1
+kind: IDPortenClient
+metadata:
+  name: test
+  namespace: sikkerhetsmetrikker-main
+spec:
+  clientName: <CLIENT_NAME>
+  clientURI: https://<APP_SUBDOMAIN>.<DOMAIN_SUFFIX>
+  frontchannelLogoutURI: http://localhost:9876/logout
+  integrationType: idporten
+  redirectURIs:
+    - http://localhost:9876/callback
+  scopes:
+    - openid
+    - profile
+  secretName: <SECRET_NAME>

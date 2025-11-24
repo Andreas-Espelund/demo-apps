@@ -64,7 +64,7 @@ function(
           ],
           external: [
             {
-              host: 'rosa-db-dev',
+              host: '<DATABASE_HOST_NAME>',
               ip: databaseHost,
               ports: [
                 {
@@ -75,7 +75,7 @@ function(
               ],
             },
             {
-              host: 'login.microsoftonline.com',
+              host: '<MICROSOFT_LOGIN_HOST>',
             },
           ],
         },
