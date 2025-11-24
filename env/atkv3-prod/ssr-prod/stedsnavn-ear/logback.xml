@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <turboFilter class="no.statkart.stedsnavn.tomee.support.StedsnavnLogFilter" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logging.appender.console.level:-INFO}</level>
+        </filter>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"logtype":"app"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <logger name="OpenEJB" level="warn"/>
+    <logger name="org.apache.cxf" level="warn"/>
+    <logger name="org.apache.jasper" level="warn"/>
+    <logger name="org.apache.myfaces" level="warn"/>
+    <logger name="org.apache.openejb" level="warn"/>
+    <logger name="org.apache.webbeans" level="warn"/>
+    <logger name="org.geoserver" level="warn"/>
+    <logger name="org.geotools" level="warn"/>
+    <logger name="org.hibernate" level="warn"/>
+    <logger name="org.quartz" level="warn"/>
+    <logger name="org.scopemvc" level="error"/>
+    <logger name="org.springframework" level="warn"/>
+
+</configuration>
