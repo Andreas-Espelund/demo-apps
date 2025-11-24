@@ -1,4 +1,4 @@
-function(name, env, version) [
+function(name='regelrett-frontend', env, version) [
   {
     apiVersion: 'skiperator.kartverket.no/v1alpha1',
     kind: 'Application',
@@ -8,12 +8,18 @@ function(name, env, version) [
     spec: {
       image: version,
       port: 3000,
-      ingresses: ['devex.demo-frontend-' + env + '.host.com'],
+      ingresses: ['regelrett.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>'],
+      resources: {
+        requests: {
+          cpu: '25m',
+          memory: '128Mi',
+        },
+      },
       accessPolicy: {
         outbound: {
           rules: [
             {
-              application: 'demo-backend',
+              application: 'regelrett-backend',
             },
           ],
         },
@@ -21,16 +27,16 @@ function(name, env, version) [
       env: [
         {
           name: 'VITE_AUTHORITY',
-          value: 'https://login.microsoftonline.com/1234-5678/v2.0',
+          value: 'https://login.microsoftonline.com/<TENANT_ID>/v2.0',
         },
         {
           name: 'VITE_FRONTEND_URL',
-          value: 'https://devex.atgcp1-' + env + '.host.com',
+          value: 'https://regelrett.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>',
         },
         {
           name: 'VITE_CLIENT_ID',
-          value: if env == 'dev' then 'abcd-efgh-1234-5678'
-          else if env == 'prod' then 'xyz-123-asdf',
+          value: if env == 'dev' then '<VITE_CLIENT_ID_DEV>'
+          else if env == 'prod' then '<VITE_CLIENT_ID_PROD>',
         },
         {
           name: 'VITE_BACKEND_URL',

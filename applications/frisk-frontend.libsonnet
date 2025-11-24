@@ -1,0 +1,64 @@
+function(name='frisk-frontend', env, version, VITE_CLIENT_ID) [
+  {
+    apiVersion: 'skiperator.kartverket.no/v1alpha1',
+    kind: 'Application',
+    metadata: {
+      name: name,
+    },
+    spec: {
+      image: version,
+      port: 3000,
+      ingresses: ['frisk.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>'],
+      resources: {
+        requests: {
+          cpu: '25m',
+          memory: '128Mi',
+        },
+      },
+      accessPolicy: {
+        outbound: {
+          rules: [
+            {
+              application: 'frisk-backend',
+            },
+          ],
+          external: [
+            {
+                 host: 'graph.microsoft.com',
+            },
+            {
+                host: 'login.microsoftonline.com',
+            },
+          ],
+        },
+      },
+      env: [
+        {
+          name: 'VITE_CLIENT_ID',
+          value: VITE_CLIENT_ID,
+        },
+        {
+          name: 'VITE_AUTHORITY',
+          value: 'https://login.microsoftonline.com/<TENANT_ID>',
+        },
+        {
+          name: 'VITE_LOGIN_REDIRECT_URI',
+          value: 'https://frisk.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>',
+        },
+        {
+          name: 'VITE_BACKEND_URL',
+          value: 'https://api.frisk.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>',
+        },
+        {
+          name: 'VITE_REGELRETT_FRONTEND_URL',
+          value: 'https://regelrett.<DOMAIN_PREFIX>-' + env + '.<DOMAIN_SUFFIX>',
+        },
+        {
+          name: 'REGELRETT_CLIENT_ID',
+          value: if env == 'dev' then '<REGELRETT_CLIENT_ID_DEV>'
+          else if env == 'prod' then '<REGELRETT_CLIENT_ID_PROD>'
+        },
+      ],
+    },
+  },
+]
